@@ -1,0 +1,57 @@
+Procedure d'nstaltion d'un serveur Apache2 sur Ubuntu
+apt update
+   ↓
+Mettre à jour les informations des logiciels
+
+apt install apache2
+   ↓
+Installer Apache
+
+systemctl enable --now apache2
+   ↓
+Démarrer Apache + démarrage automatique
+
+ufw allow "Apache Full"
+   ↓
+Autoriser HTTP (80) et HTTPS (443)
+
+systemctl status apache2
+   ↓
+Vérifier Apache
+
+curl -I http://IP_DU_SERVEUR
+   ↓
+Tester l'accès au serveur web
+
+
+Générer un certificat PGP
+Les utilisateurs veulent s'assurer que les paquets ont bien été créés par vous, et non par quelqu'un ayant accédé à votre serveur. Cela implique la création d'un certificat de sécurité , la signature des paquets avec l'une de ses clés et la vérification de leur authenticité par une autre.
+
+Verifciation et installeion du paquet repreprop
+reprepro --version
+sudo apt install reprepro
+
+
+Générez un certificat avec des paramètres par défaut pertinents :
+
+gpg --gen-key
+verification
+
+gpg --list-secret-keys 
+/home/repo/.gnupg/pubring.kbx
+-----------------------------
+sec   rsa3072 2026-08-29 [SC] [expire : 2028-08-28]
+      7A5BB3E65B6EBDA2B5CD250C3709DE19FB6D668E
+uid          [  ultime ] repo-local <aofdiallo@gmail.com>
+ssb   rsa3072 2026-08-29 [E] [expire : 2028-08-28]
+
+Configurer reprepro
+Commencez par créer un répertoire de dépôt et un sous-répertoire de configuration 
+sudo mkdir -p /var/www/repo_local/
+mkdir -p /var/www/repo_local/conf
+
+
+Ensuite creer un fichier
+sudo touch /var/www/repo_local/conf/
+
+Editon le fhier distribution
