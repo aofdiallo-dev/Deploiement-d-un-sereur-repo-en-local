@@ -106,10 +106,14 @@ main SignWith SignWith: 3DF942FB109EA16A C'est l'identifiant de notre clé GPG u
 
 NB: vous pouvez utiliser la commande at /etc/os-release pour voir les information de votre systeme
 
-Export le dépôt Pour exporter le depôt on se palce: cd /var/www/repo_local puis: reprerpro export Vous devez sasire un mot de passe qui avez fournie lors de la creation du cle GPG
-Vérifie : find /var/www/repo_local/dists -type f ls -lh /var/www/repo_local/dists/noble/InRelease
+Export le dépôt Pour exporter le depôt on se palce: 
+cd /var/www/repo_local puis:
+reprerpro export Vous devez sasire un mot de passe qui avez fournie lors de la creation du cle GPG
+Vérifie : 
+find /var/www/repo_local/dists -type f ls -lh /var/www/repo_local/dists/noble/InRelease
 
-6-Exporter la clé publique gpg --armor --export F3E3D27F48AFD097 > /var/www/debian/repo_local.asc gpg --armor --export F3E3D27F48AFD097 > /var/www/debian/repo_local.asc Vérifie : ls -lh /var/www/repo_local/repo_local.asc Puis : head -n 2 /var/www/repo_local/repo_local.asc Tu dois obtenir : -----BEGIN PGP PUBLIC KEY BLOCK-----
+6-Exporter la clé publique
+gpg --armor --export F3E3D27F48AFD097 > /var/www/debian/repo_local.asc gpg --armor --export F3E3D27F48AFD097 > /var/www/debian/repo_local.asc Vérifie : ls -lh /var/www/repo_local/repo_local.asc Puis : head -n 2 /var/www/repo_local/repo_local.asc Tu dois obtenir : -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 NB: vous devriez remplacer cette clé
 
@@ -124,9 +128,13 @@ Alias /debian /var/www/repo_local
 
 Activation et finalisation du fichier pour la configuration de l'alias http sudo a2enconf repo_local.conf
 
-Tester la syntaxe Apache pour s'assurer qu'il n'y a pas d'erreur sudo apache2ctl configtest Si le retour est "Syntax OK", redémarrer le serveur web et le premier dépôt devrait apparaitre sudo systemctl reload apache2.service
+Tester la syntaxe Apache pour s'assurer qu'il n'y a pas d'erreur
+sudo apache2ctl configtest
+Si le retour est "Syntax OK", redémarrer le serveur web et le premier dépôt devrait apparaitre
+sudo systemctl reload apache2.service
 
-Tester le serveur Depuis repo : curl -I http://localhost/repo_local/dists/noble/InRelease Puis : curl -I http://localhost/repo_local/repo_local.asc Les deux doivent retourner quelque chose comme : HTTP/1.1 200 OK
+Tester le serveur Depuis repo : curl -I http://localhost/repo_local/dists/noble/InRelease Puis : curl -I http://localhost/repo_local/repo_local.asc 
+Les deux doivent retourner quelque chose comme : HTTP/1.1 200 OK
 9. Installer la clé sur le client
 Sur client :
 sudo mkdir -p /etc/apt/keyrings
