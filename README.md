@@ -20,6 +20,8 @@ Le serveur récupère/stocke les paquets .deb, Reprepro construit l'index APT, A
 6-Exporter la clé publique
 
 7-configuration de apache2
+8-Teste sur la machine client ubuntu
+9-Installer la clé sur le client
 
 
 
