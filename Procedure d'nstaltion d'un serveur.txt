@@ -127,3 +127,33 @@ Activation et finalisation du fichier pour la configuration de l'alias http sudo
 Tester la syntaxe Apache pour s'assurer qu'il n'y a pas d'erreur sudo apache2ctl configtest Si le retour est "Syntax OK", redémarrer le serveur web et le premier dépôt devrait apparaitre sudo systemctl reload apache2.service
 
 Tester le serveur Depuis repo : curl -I http://localhost/repo_local/dists/noble/InRelease Puis : curl -I http://localhost/repo_local/repo_local.asc Les deux doivent retourner quelque chose comme : HTTP/1.1 200 OK
+9. Installer la clé sur le client
+Sur client :
+sudo mkdir -p /etc/apt/keyrings
+
+Puis :
+curl -fsSL http://192.168.0.179/repo_local/repo_local.asc | \
+sudo gpg --dearmor -o /etc/apt/keyrings/repo_local.gpg
+Vérifie :
+gpg --show-keys /etc/apt/keyrings/repo_local.gpg
+
+10. Ajouter le dépôt APT
+Sur client :
+sudo nano /etc/apt/sources.list.d/local_repo.sources
+Je recommande le format .sources moderne :
+Types: deb
+URIs: http://192.168.0.159/repo_local
+Suites: noble
+Components: main
+Architectures: amd64
+Signed-By: /etc/apt/keyrings/repo_local.gpg
+
+Puis :
+sudo apt update
+Tu devrais voir quelque chose comme :
+Réception de :1 http://192.168.0.159/repo_local jammy InRelease [1 794 B]
+et aucune erreur de signature.
+
+
+
+
