@@ -64,11 +64,36 @@ Pourquoi ? /var/www/debian: c'est la racine de notre depôt dans mon cas de ce l
 
 On obtient progressivement :
 
-/var/www/repo_local/ ├── conf/ ├── incoming/ ├── dists/ └── pool/ 3 Créer la clé GPG
-Il faut créer une clé GPG pour signer les depôt connecté avec l'utilisateur server Pour creer une clé GPG il faut taper la commande: gpg --full-generate-key Choisis par exemple : RSA and RSA 4096 Pour l'expiration, tu peux choisir une durée adaptée à ton environnement. Pour l'identité : 0 Real name:mon-repo Email: adresse email Commentaire: clé GPG NB: vous devriez saisir un mot depasse APPUYER SUR O pour sortir
+/var/www/repo_local/
+├── conf/ 
+├── incoming/ 
+├── dists/ 
+└── pool/ 
+3 Créer la clé GPG
+Il faut créer une clé GPG pour signer les depôt connecté avec l'utilisateur server 
+Pour creer une clé GPG il faut taper la commande:
+gpg --full-generate-key 
+Choisis par exemple : RSA and RSA 4096
+Pour l'expiration, tu peux choisir une durée adaptée à ton environnement.
+Pour l'identité : 0 Real 
+name:mon-repo 
+Email: adresse email Commentaire: clé GPG
+NB: vous devriez saisir un mot depasse APPUYER SUR O pour sortir
 
-Le fichier distributions Nous devons créé un fichier nommé distribution dans le repertoire suivant:
-/var/www/repo_local/conf/distributions Ensuite nous devons l'editer en mettant ceux-ci avec la commande suivant: NB: c'est l'un des fichers les plus important du projet Origin: repo_local Label: repo_local Suite: stable Codename: jammy Architectures: amd64 arm64 Version: 22.04.5 LTS Components: main Description: repo_local SignWith: 3DF942FB109EA16A
+Le fichier distributions
+Nous devons créé un fichier nommé distribution dans le repertoire suivant:
+/var/www/repo_local/conf/distributions 
+Ensuite nous devons l'editer en mettant ceux-ci avec la commande suivant: 
+NB: c'est l'un des fichers les plus important du projet
+Origin: repo_local
+Label: repo_local 
+Suite: stable
+Codename: jammy 
+Architectures: amd64 arm64
+Version: 22.04.5 LTS
+Components: main
+Description: repo_local
+SignWith: 3DF942FB109EA16A
 
 ....Explication ligne par ligne Origin Origin: repo_local
 
@@ -106,27 +131,38 @@ main SignWith SignWith: 3DF942FB109EA16A C'est l'identifiant de notre clé GPG u
 
 NB: vous pouvez utiliser la commande at /etc/os-release pour voir les information de votre systeme
 
-Export le dépôt Pour exporter le depôt on se palce: 
+Export le dépôt
+Pour exporter le depôt on se palce: 
 cd /var/www/repo_local puis:
-reprerpro export Vous devez sasire un mot de passe qui avez fournie lors de la creation du cle GPG
+reprerpro export 
+Vous devez sasire un mot de passe qui avez fournie lors de la creation du cle GPG
 Vérifie : 
 find /var/www/repo_local/dists -type f ls -lh /var/www/repo_local/dists/noble/InRelease
 
 6-Exporter la clé publique
-gpg --armor --export F3E3D27F48AFD097 > /var/www/debian/repo_local.asc gpg --armor --export F3E3D27F48AFD097 > /var/www/debian/repo_local.asc Vérifie : ls -lh /var/www/repo_local/repo_local.asc Puis : head -n 2 /var/www/repo_local/repo_local.asc Tu dois obtenir : -----BEGIN PGP PUBLIC KEY BLOCK-----
+gpg --armor --export F3E3D27F48AFD097 > /var/www/debian/repo_local.asc 
+Vérifie : ls -lh /var/www/repo_local/repo_local.asc 
+Puis :
+head -n 2 /var/www/repo_local/repo_local.asc 
+Tu dois obtenir : -----BEGIN PGP PUBLIC KEY BLOCK-----
 
-NB: vous devriez remplacer cette clé
+NB: vous devriez remplacer cette clé par le votre
 
-2.Installer le Configuration d'un serveur repo en local F3E3D27F48AFD097 par le votre pour voir cette clé taper cette commande: gpg --list-secret-keys --keyid-format LONG Vous deriez voir un exemple comme ca :sec rsa4096/AF0ED797EDC4D4F0 2026-09-07 [SC]
+Pour voir cette clé taper cette commande: gpg --list-secret-keys --keyid-format LONG
+Vous deriez voir un exemple comme ca :sec rsa4096/AF0ED797EDC4D4F0 2026-09-07 [SC]
 
-7-configuration de apache2 Nous devons editer un fichier: sudo nano /etc/apache2/conf-available/repo_local.conf en mettant ceux-ci
+7-configuration de apache2 
+Nous devons editer un fichier: sudo nano /etc/apache2/conf-available/repo_local.conf en mettant ceux-ci
 
-Dépôt APT reprepro
+#Dépôt APT reprepro
 Alias /debian /var/www/repo_local
+Options Indexes FollowSymLinks
+ AllowOverride None
+ Require all granted 
+<Directory /var/www/repo_local> Enrégister et quitter
 
-<Directory /var/www/repo_local> Options Indexes FollowSymLinks AllowOverride None Require all granted Enrégister et quitter
-
-Activation et finalisation du fichier pour la configuration de l'alias http sudo a2enconf repo_local.conf
+...Activation et finalisation du fichier pour la configuration de l'alias http
+sudo a2enconf repo_local.conf
 
 Tester la syntaxe Apache pour s'assurer qu'il n'y a pas d'erreur
 sudo apache2ctl configtest
